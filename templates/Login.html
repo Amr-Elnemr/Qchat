@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+	<form action="{{url_for('home')}}" method="post">
+	<h1>Welcome to Qchat, choose your name and go!</h1>
+	  <div>
+	    <label for="disname"><b>Display name</b></label>
+	    <input type="text" placeholder="Display name" name="disname" required><br><br>
+
+	    <button type="submit" style="cursor:pointer">Go</button><br><br>
+
+	  </div>
+
+	</form>
+</body>
+</html>

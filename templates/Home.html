@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Home Page</title>
+
+	</head>
+	<body>
+		<header>
+			<a href="{{url_for("show_chatrooms")}}"><button style="cursor:pointer">Join a chat room</button></a>
+		</header>
+		<h1>Welcome to Qchat! ya {{username}}</h1>
+
+		<form>
+		  <div>
+			<h4>Start your own chat</h4>
+			<label>Chat room name</label>
+			<input type="text" id="chatname" name="chatname" placeholder="room" required>
+		  </div>
+		  <br>
+
+		  <div>
+			<button type="submit" style="width: 8%; cursor:pointer">Create</button>
+		  </div>
+		</form>
+		<br>
+	{% if ch_conflict %}
+		<i style="color:red">Sorry, this room already exists. please try another name</i>
+	{% endif %}
+	<i id="msg"></i>
+
+
+
+	<script>
+		document.addEventListener('DOMContentLoaded', ()=>
+		{
+			document.querySelector('form').onsubmit = () =>{
+				const request = new XMLHttpRequest();
+				const chatname = document.querySelector('#chatname').value;
+				request.open('POST', "/Create_chatroom");
+
+				request.onload = () => {
+					const data = JSON.parse(request.responseText);
+					if (data.success){
+						document.querySelector('#msg').innerHTML = 'Chat-room is created successfuly';
+						document.querySelector('#msg').style.color = 'green'
+					}
+					else{
+						document.querySelector('#msg').innerHTML = 'Sorry, this room already exists. please try another name';
+						document.querySelector('#msg').style.color = 'red'
+					}
+				}
+				const inputs = new FormData();
+				inputs.append('chatname', chatname);
+				request.send(inputs);
+				return false;
+			}
+		});
+
+
+	</script>
+
+
+	</body>
+</html>

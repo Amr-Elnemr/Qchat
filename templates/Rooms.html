@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rooms</title>
+</head>
+<body>
+    <header>
+        <a href="{{url_for("home")}}"><button style="cursor:pointer">Home</button></a>
+    </header>
+    <h3>Select a chat room and go:</h3>
+
+    <ul>
+        {% for room in rooms %}
+            <a href="{{url_for('join_chatroom', roomName = room)}}"><li>{{room}}</li></a>
+        {% endfor %}
+
+    </ul>
+
+</body>
+</html>

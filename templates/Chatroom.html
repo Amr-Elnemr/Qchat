@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <title>Title</title>
+    <style>
+        .box_container{
+            border: 4px solid #98FB98;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 25px 80px 20px;
+        }
+
+        .chat_container{
+            border: 2px solid;
+            background-color: #98FB98;
+            border-radius: 5px;
+            padding: 0px;
+            margin: 25px 0px 75px;
+            line-height: 30px;
+            width:50%;
+        }
+
+        span{
+            font-style: italic;
+            font-size: 12px;
+        }
+
+        .b{
+            color: green;
+        }
+        .a{
+            color: blue;
+            text-align: right;
+        }
+        .chat_btn{
+            border: 2px solid;
+            background-color: #98FB98;
+            border-radius: 5px;
+            cursor:pointer;
+            padding: 0px;
+            margin: 25px 0% 75px;
+            line-height: 30px;
+            width: 50px;
+            font-style: bold;
+            font-size:16px;
+
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="{{url_for('home')}}" ><button style="cursor:pointer">Home</button></a>
+    </header>
+    <h2>{{roomName}}</h2>
+    <h1 style="display: none">{{userName}}</h1>
+    <div class="box_container">
+        {% for chat in history %}
+            {% if chat.person == userName %}
+                <div class="a">
+            {% else %}
+                <div class="b">
+            {% endif %}
+                <b>{{chat.person}}: </b><span>({{chat.time}})</span>
+                <p>{{chat.text}}</p>
+            </div>
+        {% endfor %}
+
+        <!--<div class="b">-->
+            <!--<b>Ali: </b><span>(02.08.2019, 11:00)</span>-->
+            <!--<p>Hello. How are you today?</p>-->
+        <!--</div>-->
+        <!--<div class="a">-->
+            <!--<b>Amr: </b><span>(02.08.2019, 11:02)</span>-->
+            <!--<p>Fine, thanks and U?</p>-->
+
+        <!--</div>-->
+        <!--<div class="b">-->
+            <!--<b>Ali </b><span>(02.08.2019, 11:04)</span>-->
+            <!--<p>I'm good</p>-->
+        <!--</div>-->
+    </div>
+
+    <form align="center" width="50%">
+        <input class="chat_container" type="text" name="tosend" placeholder="Type here ... " required>
+
+        <input class="chat_btn" type="submit" value="Send">
+
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', ()=>
+		{
+		    // when send button is clicked 
+		    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+		    const roomName = document.querySelector('h2').innerText;
+		    socket.on('connect', () => {
+		        document.querySelector('form').onsubmit = () => {
+		            const inst_msg = document.querySelector('.chat_container').value;
+		            const data = {'inst_msg': inst_msg, 'roomName': roomName};
+		            socket.emit('send', data);
+		            document.querySelector('.chat_container').value = "";
+		            return false;
+		    	}
+		    });
+            // when a new message is submitted
+            socket.on('update_room'+roomName, data => {
+            	// console.log(data)
+                const curr_user = document.querySelector('h1').innerText;
+                document.querySelector('.box_container').innerHTML = "";
+                data.forEach(msg=>{
+                	var div = document.createElement('div');
+                	if(msg.person == curr_user){
+                		div.classList.add('a');
+                	}
+                	else{
+                		div.classList.add('b');
+                	}
+                	div.innerHTML = `<b>${msg.person}: </b><span>(${msg.time})</span><p>${msg.text}</p>`;
+                	document.querySelector('.box_container').append(div);
+                })                
+                
+            });
+
+		});
+    </script>
+</body>
+</html>
