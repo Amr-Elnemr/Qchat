@@ -1,6 +1,6 @@
 # BookY
 
-
+An instant (choose a display name and go) chatting application implemented in Flask. With Qchat you can Create a room or join an existing one.
 
 ## Prerequisites (Used Technologies)
 
